@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Clone - Tamu Undangan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --spotify-green: #1db954;
+            --spotify-dark: #121212;
+            --spotify-gray: #282828;
+            --spotify-light-gray: #b3b3b3;
+            --spotify-card: #181818;
+            --spotify-sidebar: #000000;
+            --text-primary: #ffffff;
+            --text-secondary: #b3b3b3;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background-color: var(--spotify-dark);
+            color: var(--text-primary);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: var(--spotify-sidebar);
+            padding: 24px 12px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 0 12px;
+        }
+        
+        .logo i {
+            font-size: 40px;
+            color: var(--spotify-green);
+            margin-right: 10px;
+        }
+        
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .nav-links {
+            list-style: none;
+            margin-bottom: 24px;
+        }
+        
+        .nav-links li {
+            padding: 10px 12px;
+            border-radius: 4px;
+            margin-bottom: 4px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-links li:hover {
+            background-color: var(--spotify-gray);
+        }
+        
+        .nav-links li.active {
+            background-color: var(--spotify-gray);
+        }
+        
+        .nav-links li i {
+            margin-right: 16px;
+            width: 24px;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        
+        .nav-links li.active i {
+            color: var(--text-primary);
+        }
+        
+        .nav-links li span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .playlist-section {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 0 12px;
+        }
+        
+        .playlist-section h3 {
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+        
+        .playlist-list {
+            list-style: none;
+        }
+        
+        .playlist-list li {
+            padding: 8px 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .playlist-list li:hover {
+            color: var(--text-primary);
+        }
+        
+        .add-playlist {
+            margin-top: 16px;
+            padding: 8px 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .add-playlist:hover {
+            color: var(--text-primary);
+        }
+        
+        .add-playlist i {
+            margin-right: 16px;
+            background-color: var(--text-secondary);
+            color: var(--spotify-sidebar);
+            width: 24px;
+            height: 24px;
+            border-radius: 2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .top-bar {
+            background-color: rgba(18, 18, 18, 0.8);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .navigation-buttons {
+            display: flex;
+            gap: 16px;
+        }
+        
+        .nav-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+        
+        .search-bar {
+            flex-grow: 1;
+            max-width: 400px;
+            margin: 0 24px;
+        }
+        
+        .search-container {
+            background-color: var(--spotify-gray);
+            border-radius: 500px;
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .search-container i {
+            color: var(--text-secondary);
+            margin-right: 8px;
+        }
+        
+        .search-container input {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            width: 100%;
+            font-size: 14px;
+            outline: none;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            background-color: var(--spotify-gray);
+            border-radius: 23px;
+            padding: 2px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .user-profile:hover {
+            background-color: var(--spotify-card);
+        }
+        
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background-color: var(--spotify-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin: 0 8px 0 4px;
+        }
+        
+        .user-profile i {
+            font-size: 12px;
+            margin-right: 8px;
+            color: var(--text-primary);
+        }
+        
+        /* Content Area */
+        .content-area {
+            padding: 24px 32px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .content-header {
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .content-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+        
+        .see-all {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .see-all:hover {
+            color: var(--text-primary);
+            text-decoration: underline;
+        }
+        
+        .track-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+        
+        .track-card {
+            background-color: var(--spotify-card);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            position: relative;
+        }
+        
+        .track-card:hover {
+            background-color: var(--spotify-gray);
+        }
+        
+        .track-card.playing {
+            background-color: rgba(29, 185, 84, 0.1);
+            border: 1px solid rgba(29, 185, 84, 0.3);
+        }
+        
+        .track-image {
+            width: 100%;
+            aspect-ratio: 1;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            object-fit: cover;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        
+        .track-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .track-artist {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .track-album {
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .play-button {
+            position: absolute;
+            bottom: 80px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            background-color: var(--spotify-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.3s;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+        
+        .track-card:hover .play-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .track-card.playing .play-button {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Player Bar */
+        .player-bar {
+            background-color: var(--spotify-gray);
+            padding: 16px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            min-height: 90px;
+            flex-shrink: 0;
+        }
+        
+        .now-playing {
+            display: flex;
+            align-items: center;
+            width: 30%;
+        }
+        
+        .now-playing-image {
+            width: 56px;
+            height: 56px;
+            border-radius: 4px;
+            margin-right: 14px;
+        }
+        
+        .track-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .track-info p {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .like-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            margin-left: 16px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .like-btn.liked {
+            color: var(--spotify-green);
+        }
+        
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+        }
+        
+        .control-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+        }
+        
+        .control-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        
+        .control-btn.play-pause {
+            background-color: var(--text-primary);
+            color: var(--spotify-dark);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .control-btn:hover {
+            color: var(--text-primary);
+        }
+        
+        .progress-area {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            gap: 12px;
+        }
+        
+        .progress-time {
+            font-size: 12px;
+            color: var(--text-secondary);
+            min-width: 40px;
+        }
+        
+        .progress-bar {
+            flex-grow: 1;
+            height: 4px;
+            background-color: #4d4d4d;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .progress {
+            height: 100%;
+            background-color: var(--spotify-green);
+            border-radius: 2px;
+            width: 30%;
+            position: relative;
+        }
+        
+        .progress::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background-color: var(--text-primary);
+            border-radius: 50%;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .progress-bar:hover .progress::after {
+            opacity: 1;
+        }
+        
+        .volume-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: 30%;
+            gap: 12px;
+        }
+        
+        .volume-icon {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+        
+        .volume-bar {
+            width: 100px;
+            height: 4px;
+            background-color: #4d4d4d;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .volume-level {
+            height: 100%;
+            background-color: var(--text-primary);
+            border-radius: 2px;
+            width: 70%;
+        }
+        
+        /* Background Audio Visualizer */
+        .audio-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.05;
+            pointer-events: none;
+        }
+        
+        .visualizer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 2px;
+        }
+        
+        .bar {
+            width: 10px;
+            background-color: var(--spotify-green);
+            border-radius: 2px;
+            animation: pulse 0.5s infinite alternate;
+        }
+        
+        @keyframes pulse {
+            from { height: 10%; }
+            to { height: 100%; }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 80px;
+                padding: 24px 8px;
+            }
+            
+            .logo h1, .nav-links li span, .playlist-section h3, 
+            .playlist-list li span, .add-playlist span {
+                display: none;
+            }
+            
+            .logo {
+                justify-content: center;
+                padding: 0;
+            }
+            
+            .logo i {
+                margin-right: 0;
+            }
+            
+            .nav-links li i, .add-playlist i {
+                margin-right: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            .track-list {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+            
+            .now-playing {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+            
+            .player-controls {
+                width: 100%;
+            }
+            
+            .volume-controls {
+                width: 100%;
+                justify-content: center;
+                margin-top: 16px;
+            }
+            
+            .player-bar {
+                flex-wrap: wrap;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fab fa-spotify"></i>
+            <h1>Spotify</h1>
+        </div>
+        
+        <ul class="nav-links">
+            <li class="active">
+                <i class="fas fa-home"></i>
+                <span>Beranda</span>
+            </li>
+            <li>
+                <i class="fas fa-search"></i>
+                <span>Cari</span>
+            </li>
+            <li>
+                <i class="fas fa-book"></i>
+                <span>Koleksi Kamu</span>
+            </li>
+        </ul>
+        
+        <div class="playlist-section">
+            <h3>Playlist Kamu</h3>
+            <ul class="playlist-list">
+                <li><span>Lagu Favorit</span></li>
+                <li><span>Dengaranku Hari Ini</span></li>
+                <li><span>Lagu Nostalgia</span></li>
+                <li><span>Reggae Vibes</span></li>
+                <li><span>Lagu Pesta</span></li>
+            </ul>
+            
+            <div class="add-playlist">
+                <i class="fas fa-plus"></i>
+                <span>Buat Playlist</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="navigation-buttons">
+                <div class="nav-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </div>
+                <div class="nav-btn">
+                    <i class="fas fa-chevron-right"></i>
+                </div>
+            </div>
+            
+            <div class="search-bar">
+                <div class="search-container">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Apa yang ingin kamu dengar?" id="search-input">
+                </div>
+            </div>
+            
+            <div class="user-profile">
+                <div class="user-avatar">A</div>
+                <div class="user-name">AanzDigital</div>
+                <i class="fas fa-chevron-down"></i>
+            </div>
+        </div>
+        
+        <!-- Content Area -->
+        <div class="content-area" id="content-area">
+            <div class="content-header">
+                <h2>Lagu "Tamu Undangan"</h2>
+                <div class="see-all">Tampilkan semua</div>
+            </div>
+            
+            <div class="track-list" id="track-list">
+                <!-- Track cards akan dimuat di sini dari JavaScript -->
+            </div>
+            
+            <div class="content-header">
+                <h2>Rekomendasi Untukmu</h2>
+                <div class="see-all">Tampilkan semua</div>
+            </div>
+            
+            <div class="track-list">
+                <!-- Placeholder untuk rekomendasi -->
+                <div class="track-card">
+                    <img src="https://i.scdn.co/image/ab67616d0000b273e2d156fdc691f6d4c8190c14" class="track-image" alt="Album">
+                    <div class="track-title">Tak Ingin Usai</div>
+                    <div class="track-artist">Keisya Levronka</div>
+                    <div class="track-album">Tak Ingin Usai</div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                
+                <div class="track-card">
+                    <img src="https://i.scdn.co/image/ab67616d0000b273c1a69d49a2bcedba5b75ff2e" class="track-image" alt="Album">
+                    <div class="track-title">Sial</div>
+                    <div class="track-artist">Mahalini</div>
+                    <div class="track-album">Sial</div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                
+                <div class="track-card">
+                    <img src="https://i.scdn.co/image/ab67616d0000b2733f907552c6c2e7b6c07e9c8c" class="track-image" alt="Album">
+                    <div class="track-title">Tak Segampang Itu</div>
+                    <div class="track-artist">Anggi Marito</div>
+                    <div class="track-album">Tak Segampang Itu</div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+                
+                <div class="track-card">
+                    <img src="https://i.scdn.co/image/ab67616d0000b2738c8c4ba5bcb560e88e5e4f3f" class="track-image" alt="Album">
+                    <div class="track-title">Jiwa Yang Bersedih</div>
+                    <div class="track-artist">Ghea Indrawari</div>
+                    <div class="track-album">Jiwa Yang Bersedih</div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Player Bar -->
+        <div class="player-bar">
+            <div class="now-playing">
+                <img id="now-playing-image" src="https://i.scdn.co/image/ab67616d0000b27358448fd9190900666e4af32a" class="now-playing-image" alt="Now Playing">
+                <div class="track-info">
+                    <h4 id="now-playing-title">TAMU UNDANGAN - Reggae</h4>
+                    <p id="now-playing-artist">Niken Salindry</p>
+                </div>
+                <button class="like-btn" id="like-btn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+            
+            <div class="player-controls">
+                <div class="control-buttons">
+                    <button class="control-btn shuffle">
+                        <i class="fas fa-random"></i>
+                    </button>
+                    <button class="control-btn prev">
+                        <i class="fas fa-step-backward"></i>
+                    </button>
+                    <button class="control-btn play-pause" id="play-pause-btn">
+                        <i class="fas fa-play" id="play-pause-icon"></i>
+                    </button>
+                    <button class="control-btn next">
+                        <i class="fas fa-step-forward"></i>
+                    </button>
+                    <button class="control-btn repeat">
+                        <i class="fas fa-redo"></i>
+                    </button>
+                </div>
+                
+                <div class="progress-area">
+                    <span class="progress-time" id="current-time">0:00</span>
+                    <div class="progress-bar" id="progress-bar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <span class="progress-time" id="duration-time">4:24</span>
+                </div>
+            </div>
+            
+            <div class="volume-controls">
+                <i class="fas fa-volume-up volume-icon"></i>
+                <div class="volume-bar" id="volume-bar">
+                    <div class="volume-level" id="volume-level"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Audio Background Visualizer -->
+    <div class="audio-background" id="audio-background">
+        <div class="visualizer" id="visualizer">
+            <!-- Bars akan dibuat oleh JavaScript -->
+        </div>
+    </div>
+    
+    <!-- Audio Element -->
+    <audio id="audio-player" src=""></audio>
+    
+    <script>
+        // Data dari API response yang diberikan
+        const trackData = {
+            "status": true,
+            "creator": "AanzDigital",
+            "result": [
+                {
+                    "id": "5wqim4iZXl0HXsc7bBpMkb",
+                    "title": "TAMU UNDANGAN - Reggae",
+                    "artist": "Niken Salindry",
+                    "album": "TAMU UNDANGAN (Reggae)",
+                    "duration_ms": 264000,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/5wqim4iZXl0HXsc7bBpMkb",
+                    "image": "https://i.scdn.co/image/ab67616d0000b27358448fd9190900666e4af32a"
+                },
+                {
+                    "id": "4tQEH1s2owu9sk22ksyXyn",
+                    "title": "Tamu Undangan",
+                    "artist": "Lavora, Ratih SDE",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 284307,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/4tQEH1s2owu9sk22ksyXyn",
+                    "image": "https://i.scdn.co/image/ab67616d0000b273fd729487ca62e465c51be66b"
+                },
+                {
+                    "id": "6XEYlQgj87g3E6ycPFFQxp",
+                    "title": "Tamu Undangan",
+                    "artist": "Mocil Fvnky V2",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 276937,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/6XEYlQgj87g3E6ycPFFQxp",
+                    "image": "https://i.scdn.co/image/ab67616d0000b2731643b1464fad56d07be9facb"
+                },
+                {
+                    "id": "1gT4V2t3fgyZn7Ms2TgfH6",
+                    "title": "TAMU UNDANGAN",
+                    "artist": "DIEKA YK",
+                    "album": "TAMU UNDANGAN",
+                    "duration_ms": 258732,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/1gT4V2t3fgyZn7Ms2TgfH6",
+                    "image": "https://i.scdn.co/image/ab67616d0000b2736022bec8559d3d64c4f18f9f"
+                },
+                {
+                    "id": "7IoKG3cBmWA5nVGC9Q9H5Z",
+                    "title": "Tamu Undangan",
+                    "artist": "Silvy Kumalasari",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 374871,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/7IoKG3cBmWA5nVGC9Q9H5Z",
+                    "image": "https://i.scdn.co/image/ab67616d0000b2735e741ea0fd321f6d72c220ae"
+                },
+                {
+                    "id": "2UuuJkJijt0ktGdzS7c9Ia",
+                    "title": "Tamu Undangan",
+                    "artist": "FenDCR",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 231223,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/2UuuJkJijt0ktGdzS7c9Ia",
+                    "image": "https://i.scdn.co/image/ab67616d0000b273fc4d3d9700d0fd19e22263f2"
+                },
+                {
+                    "id": "4I4wzQAJ0zPDyT4W7fFHpN",
+                    "title": "Tamu Undangan",
+                    "artist": "Shepin Misa",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 399375,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/4I4wzQAJ0zPDyT4W7fFHpN",
+                    "image": "https://i.scdn.co/image/ab67616d0000b273b2ea494aec002499ee6e9f8a"
+                },
+                {
+                    "id": "6PGOGgkdJOk3mZXabzV58",
+                    "title": "Tamu Undangan",
+                    "artist": "CETS MUSIK",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 292988,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/6PGOGgkdJOk3mZXabzV58",
+                    "image": "https://i.scdn.co/image/ab67616d0000b273c19583922e005a06528792e1"
+                },
+                {
+                    "id": "5B1mi8Ni8dmV1PZ3RiYGWv",
+                    "title": "Tamu Undangan",
+                    "artist": "Linda Adista",
+                    "album": "Tamu Undangan",
+                    "duration_ms": 381230,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/5B1mi8Ni8dmV1PZ3RiYGWv",
+                    "image": "https://i.scdn.co/image/ab67616d0000b273140ef59b40ed1e5899faea67"
+                },
+                {
+                    "id": "2RNIu6vczP6kDfgszUfuqR",
+                    "title": "Tamu Undangan - Remix",
+                    "artist": "Cets Chrizto",
+                    "album": "Tamu Undangan (Remix)",
+                    "duration_ms": 211784,
+                    "preview_url": null,
+                    "spotify_url": "https://open.spotify.com/track/2RNIu6vczP6kDfgszUfuqR",
+                    "image": "https://i.scdn.co/image/ab67616d0000b27361d9d300bdc2d7573422955d"
+                }
+            ]
+        };
+
+        // State aplikasi
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+        let isLiked = false;
+        let volume = 0.7;
+        
+        // Elemen DOM
+        const audioPlayer = document.getElementById('audio-player');
+        const playPauseBtn = document.getElementById('play-pause-btn');
+        const playPauseIcon = document.getElementById('play-pause-icon');
+        const likeBtn = document.getElementById('like-btn');
+        const progress = document.getElementById('progress');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeElement = document.getElementById('current-time');
+        const durationTimeElement = document.getElementById('duration-time');
+        const volumeBar = document.getElementById('volume-bar');
+        const volumeLevel = document.getElementById('volume-level');
+        const nowPlayingImage = document.getElementById('now-playing-image');
+        const nowPlayingTitle = document.getElementById('now-playing-title');
+        const nowPlayingArtist = document.getElementById('now-playing-artist');
+        const trackListElement = document.getElementById('track-list');
+        const visualizer = document.getElementById('visualizer');
+        const audioBackground = document.getElementById('audio-background');
+        
+        // Inisialisasi daftar lagu
+        function initializeTrackList() {
+            trackListElement.innerHTML = '';
+            
+            trackData.result.forEach((track, index) => {
+                const duration = msToMinutesSeconds(track.duration_ms);
+                
+                const trackCard = document.createElement('div');
+                trackCard.className = 'track-card';
+                if (index === currentTrackIndex) {
+                    trackCard.classList.add('playing');
+                }
+                trackCard.dataset.index = index;
+                
+                trackCard.innerHTML = `
+                    <img src="${track.image}" class="track-image" alt="${track.album}">
+                    <div class="track-title">${track.title}</div>
+                    <div class="track-artist">${track.artist}</div>
+                    <div class="track-album">${track.album}</div>
+                    <div class="play-button">
+                        <i class="fas fa-play"></i>
+                    </div>
+                `;
+                
+                trackCard.addEventListener('click', (e) => {
+                    if (!e.target.classList.contains('play-button') && !e.target.parentElement.classList.contains('play-button')) {
+                        playTrack(index);
+                    }
+                });
+                
+                const playButton = trackCard.querySelector('.play-button');
+                playButton.addEventListener('click', () => {
+                    playTrack(index);
+                });
+                
+                trackListElement.appendChild(trackCard);
+            });
+            
+            // Inisialisasi lagu pertama
+            if (trackData.result.length > 0) {
+                updateNowPlaying(currentTrackIndex);
+            }
+        }
+        
+        // Fungsi untuk memutar lagu
+        function playTrack(index) {
+            // Hentikan lagu sebelumnya
+            audioPlayer.pause();
+            
+            // Update current track index
+            currentTrackIndex = index;
+            
+            // Update tampilan track yang sedang diputar
+            document.querySelectorAll('.track-card').forEach(card => {
+                card.classList.remove('playing');
+            });
+            
+            document.querySelector(`.track-card[data-index="${index}"]`).classList.add('playing');
+            
+            // Update now playing info
+            updateNowPlaying(index);
+            
+            // Atur sumber audio (karena tidak ada URL preview, kita akan simulasi)
+            // Dalam implementasi nyata, ini akan menggunakan preview_url dari data
+            audioPlayer.src = `https://cdn.pixabay.com/download/audio/2022/03/15/audio_2d8742e5f6.mp3?filename=soft-piano-100-bpm-120246.mp3`;
+            
+            // Mulai pemutaran
+            audioPlayer.play();
+            isPlaying = true;
+            playPauseIcon.classList.remove('fa-play');
+            playPauseIcon.classList.add('fa-pause');
+            
+            // Tampilkan visualizer
+            audioBackground.style.opacity = '0.05';
+            
+            // Mulai animasi visualizer
+            startVisualizer();
+        }
+        
+        // Update info lagu yang sedang diputar
+        function updateNowPlaying(index) {
+            const track = trackData.result[index];
+            nowPlayingImage.src = track.image;
+            nowPlayingTitle.textContent = track.title;
+            nowPlayingArtist.textContent = track.artist;
+            durationTimeElement.textContent = msToMinutesSeconds(track.duration_ms);
+        }
+        
+        // Format waktu dari milidetik ke menit:detik
+        function msToMinutesSeconds(ms) {
+            const minutes = Math.floor(ms / 60000);
+            const seconds = ((ms % 60000) / 1000).toFixed(0);
+            return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // Format waktu dari detik ke menit:detik
+        function secondsToMinutesSeconds(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+        
+        // Mulai visualizer audio
+        function startVisualizer() {
+            // Kosongkan visualizer
+            visualizer.innerHTML = '';
+            
+            // Buat 30 bar untuk visualizer
+            for (let i = 0; i < 30; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'bar';
+                // Atur tinggi acak dan animasi delay
+                const height = Math.random() * 80 + 20;
+                bar.style.height = `${height}%`;
+                bar.style.animationDelay = `${i * 0.05}s`;
+                visualizer.appendChild(bar);
+            }
+        }
+        
+        // Event listeners
+        playPauseBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                audioPlayer.pause();
+                playPauseIcon.classList.remove('fa-pause');
+                playPauseIcon.classList.add('fa-play');
+                audioBackground.style.opacity = '0.02';
+            } else {
+                if (audioPlayer.src) {
+                    audioPlayer.play();
+                } else {
+                    // Jika belum ada lagu yang dipilih, mainkan lagu pertama
+                    playTrack(0);
+                }
+                playPauseIcon.classList.remove('fa-play');
+                playPauseIcon.classList.add('fa-pause');
+                audioBackground.style.opacity = '0.05';
+            }
+            isPlaying = !isPlaying;
+        });
+        
+        likeBtn.addEventListener('click', () => {
+            isLiked = !isLiked;
+            likeBtn.classList.toggle('liked', isLiked);
+            likeBtn.innerHTML = isLiked ? '<i class="fas fa-heart"></i>' : '<i class="far fa-heart"></i>';
+        });
+        
+        // Update progress bar
+        audioPlayer.addEventListener('timeupdate', () => {
+            const currentTime = audioPlayer.currentTime;
+            const duration = audioPlayer.duration;
+            
+            // Update waktu
+            currentTimeElement.textContent = secondsToMinutesSeconds(currentTime);
+            
+            // Update progress bar
+            if (duration) {
+                const progressPercent = (currentTime / duration) * 100;
+                progress.style.width = `${progressPercent}%`;
+            }
+        });
+        
+        // Klik pada progress bar untuk seek
+        progressBar.addEventListener('click', (e) => {
+            const rect = progressBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            const percent = clickX / width;
+            
+            if (audioPlayer.duration) {
+                audioPlayer.currentTime = percent * audioPlayer.duration;
+            }
+        });
+        
+        // Klik pada volume bar untuk atur volume
+        volumeBar.addEventListener('click', (e) => {
+            const rect = volumeBar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const width = rect.width;
+            volume = clickX / width;
+            
+            // Batasi volume antara 0 dan 1
+            if (volume < 0) volume = 0;
+            if (volume > 1) volume = 1;
+            
+            audioPlayer.volume = volume;
+            volumeLevel.style.width = `${volume * 100}%`;
+        });
+        
+        // Kontrol navigasi
+        document.querySelector('.control-btn.prev').addEventListener('click', () => {
+            let newIndex = currentTrackIndex - 1;
+            if (newIndex < 0) newIndex = trackData.result.length - 1;
+            playTrack(newIndex);
+        });
+        
+        document.querySelector('.control-btn.next').addEventListener('click', () => {
+            let newIndex = currentTrackIndex + 1;
+            if (newIndex >= trackData.result.length) newIndex = 0;
+            playTrack(newIndex);
+        });
+        
+        document.querySelector('.control-btn.shuffle').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+        
+        document.querySelector('.control-btn.repeat').addEventListener('click', function() {
+            this.classList.toggle('active');
+        });
+        
+        // Audio selesai, mainkan lagu berikutnya
+        audioPlayer.addEventListener('ended', () => {
+            const repeatBtn = document.querySelector('.control-btn.repeat');
+            const shuffleBtn = document.querySelector('.control-btn.shuffle');
+            
+            if (repeatBtn.classList.contains('active')) {
+                // Ulangi lagu yang sama
+                audioPlayer.currentTime = 0;
+                audioPlayer.play();
+            } else if (shuffleBtn.classList.contains('active')) {
+                // Acak lagu berikutnya
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * trackData.result.length);
+                } while (newIndex === currentTrackIndex && trackData.result.length > 1);
+                
+                playTrack(newIndex);
+            } else {
+                // Mainkan lagu berikutnya secara berurutan
+                let newIndex = currentTrackIndex + 1;
+                if (newIndex >= trackData.result.length) newIndex = 0;
+                playTrack(newIndex);
+            }
+        });
+        
+        // Pencarian
+        const searchInput = document.getElementById('search-input');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            
+            document.querySelectorAll('.track-card').forEach(card => {
+                const title = card.querySelector('.track-title').textContent.toLowerCase();
+                const artist = card.querySelector('.track-artist').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || artist.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+        // Inisialisasi aplikasi
+        function initializeApp() {
+            initializeTrackList();
+            
+            // Atur volume awal
+            audioPlayer.volume = volume;
+            volumeLevel.style.width = `${volume * 100}%`;
+            
+            // Mainkan lagu pertama secara otomatis
+            setTimeout(() => {
+                playTrack(0);
+            }, 1000);
+        }
+        
+        // Jalankan aplikasi saat halaman dimuat
+        window.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
